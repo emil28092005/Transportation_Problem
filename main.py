@@ -34,13 +34,60 @@ def NorthwestCorner(
     pass
 
 
+
+S = np.array([1, 2, 3, 4])
+
+C = np.array([
+    [16, 16, 13, 22, 17], 
+    [14, 14, 13, 19, 15], 
+    [19, 19, 20, 23, M ], 
+    [M,  0,  M,  0,  0]])
+
+D = np.array([30, 20, 70, 30, 60])
+
+
 def Vogel(
         S: np.array,
         C: np.array,
         D: np.array) -> Result:
+    
+    C_length = len(C[0])
+    C_height = len(C)
+    
+    #print(C_length)
+    #print(C_height)
+    
+    RowD = np.array
+    ColD = np.array
+    
+
+    RowD = np.resize(RowD, C_height)
+    ColD = np.resize(ColD, C_length)
+    
+    #print(sorted(C[0]))
+    #print(sorted(C[0])[0])
+    #print(sorted(C[0])[1])
+    
+
+    #Finding differences
+    for y in range(C_height):
+        RowD[y] = abs(sorted(C[y])[0] - sorted(C[y])[1])
+    for x in range(C_length):   
+        ColD[x] = abs(sorted(C.T[x])[0] - sorted(C.T[x])[1])
+    
+    #print(RowD)
+    #print(ColD)
+    #Maximum difference
+    maxD = max(np.concatenate((ColD, RowD)))
+    
+    
+    
+    #print(maxD)
+    
     # TODO Vogel's method
     pass
 
+Vogel(S,C,D)
 
 def Russell(
         S: np.array,
