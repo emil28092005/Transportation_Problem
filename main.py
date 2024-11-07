@@ -35,7 +35,7 @@ def NorthwestCorner(
 
 
 
-S = np.array([1, 2, 3, 4])
+S = np.array([50, 60, 50, 50])
 
 C = np.array([
     [16, 16, 13, 22, 17], 
@@ -51,43 +51,142 @@ def Vogel(
         C: np.array,
         D: np.array) -> Result:
     
-    C_length = len(C[0])
-    C_height = len(C)
-    
-    #print(C_length)
-    #print(C_height)
-    
-    RowD = np.array
-    ColD = np.array
-    
+    print(C)
+    iteration = 0
+    while(len(C[0]) > 1 and  len(C) > 1):
+        iteration += 1
+        C_map = dict()
+        
+        for y in range(len(C)):
+            for x in range(len(C[0])):
+                C_map[x,y] = C[y][x]
+        
+        C_length = len(C[0])
+        C_height = len(C)
+        
+        print(f"C_length: {C_length}")
+        print(f"C_height: {C_height}")
+        
+        RowD = np.array
+        ColD = np.array
+        
 
-    RowD = np.resize(RowD, C_height)
-    ColD = np.resize(ColD, C_length)
-    
-    #print(sorted(C[0]))
-    #print(sorted(C[0])[0])
-    #print(sorted(C[0])[1])
-    
+        RowD = np.resize(RowD, C_height)
+        ColD = np.resize(ColD, C_length)
+        
+        #print(sorted(C[0]))
+        #print(sorted(C[0])[0])
+        #print(sorted(C[0])[1])
+        
 
-    #Finding differences
-    for y in range(C_height):
-        RowD[y] = abs(sorted(C[y])[0] - sorted(C[y])[1])
-    for x in range(C_length):   
-        ColD[x] = abs(sorted(C.T[x])[0] - sorted(C.T[x])[1])
+        #Finding differences
+        for y in range(C_height):
+            RowD[y] = abs(sorted(C[y])[0] - sorted(C[y])[1])
+        for x in range(C_length):   
+            ColD[x] = abs(sorted(C.T[x])[0] - sorted(C.T[x])[1])
+        
+        print(f"S: {S}")
+        print(f"D: {D}")
+        
+        print(f"RowD: {RowD}")
+        print(f"ColD: {ColD}")
+        #Maximum difference
+        maxD = max(np.concatenate((ColD, RowD)))
+        
+        
+        target_array = np.array([])
+        target_number = None
+        row_index_to_eleminate = None
+        column_index_to_eleminate = None
+        
+        print(f"maxD: {maxD}")
+        
+        '''if maxD in RowD:
+            target_array = C[np.where(RowD == maxD)[0]][0]
+            target_number = min(target_array)
+            row_index_to_eleminate = np.where(target_array == target_number)[0][0]
+            print(f"row {row_index_to_eleminate}")
+            C = np.delete(C, row_index_to_eleminate, 0)
+            S = np.delete(S, row_index_to_eleminate, 0)'''
+        
+        if maxD in RowD:
+            print("in RowD")
+            y = np.where(RowD == maxD)[0][0]
+            target_array = C[np.where(RowD == maxD)[0]][0]
+            target_number = min(target_array)
+            print(f"target_number: {target_number}")
+            x = np.where(target_array == target_number)[0][0]
+            print(f"(x,y): {(x,y)}")
+            print(f"D[x]:{D[x]}, S[y]:{S[y]}")
+                
+            if (D[x] >= S[y]): #TODO ?
+                print("D[x] > S[y]")
+                row_index_to_eleminate = y
+                print(f"row_index_to_eleminate {row_index_to_eleminate}")
+                selected_value = S[y]
+                
+                D[x] -= selected_value 
+                
+                C = np.delete(C, row_index_to_eleminate, 0)
+                S = np.delete(S, row_index_to_eleminate, 0)
+                
+            else:
+                print("D[x] <= S[y]")
+                column_index_to_eleminate = x
+                selected_value = D[x]
+                
+                S[y] -= selected_value 
+                
+                C = np.delete(C, column_index_to_eleminate, 1)
+                D = np.delete(D, column_index_to_eleminate, 0)
+        
+        if maxD in ColD:
+            print("in ColD")
+            x = np.where(ColD == maxD)[0][0]
+            target_array = C.T[np.where(ColD == maxD)[0]][0]
+            target_number = min(target_array)
+            print(f"target_number: {target_number}")
+            y = np.where(target_array == target_number)[0][0]
+            print(f"(x,y): {(x,y)}")
+            print(f"D[x]:{D[x]}, S[y]:{S[y]}")
+            
+            if (D[x] >= S[y]): #TODO ?
+                print("D[x] > S[y]")
+                row_index_to_eleminate = y
+                selected_value = S[y]
+                
+                D[x] -= selected_value 
+                
+                C = np.delete(C, row_index_to_eleminate, 0)
+                S = np.delete(S, row_index_to_eleminate, 0)
+                
+            else:
+                print("D[x] <= S[y]")
+                column_index_to_eleminate = x
+                selected_value = D[x]
+                
+                S[y] -= selected_value 
+                
+                C = np.delete(C, column_index_to_eleminate, 1)
+                D = np.delete(D, column_index_to_eleminate, 0)
+        print(f"target_array: {target_array}")
+        print(f"selected_value: {selected_value}")
+        
+        
+        
+        print(C)
+        
+        #print(target_array)
+        #print(maxD)
     
-    #print(RowD)
-    #print(ColD)
-    #Maximum difference
-    maxD = max(np.concatenate((ColD, RowD)))
     
     
     
-    #print(maxD)
     
     # TODO Vogel's method
     pass
 
-Vogel(S,C,D)
+#Vogel(S,C,D)
 
 def Russell(
         S: np.array,
@@ -156,7 +255,7 @@ def solve(
     return 0
 
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     C = np.array([
         [16, 16, 13, 22, 17],
         [14, 14, 13, 19, 15],
@@ -173,3 +272,4 @@ if __name__ == "__main__":
     ])
 
     print(Russell(S, C, D))
+'''
