@@ -188,6 +188,46 @@ def Vogel(
         print(C_numerated)
         print(selected_value)
         
+    print(f"D: {D}")
+    print(f"S: {S}")
+    print(solution_matrix)
+    for i in range(max(len(D),len(S))):
+        
+        if i >= len(D):
+            terminal_selected_value = S[i]
+            print(f"terminal_selected_valueD2: {terminal_selected_value}")
+            x_ter = 0
+            y_ter = C_numerated[i][0]+1
+            print(f"x:{x_ter} y:{y_ter}")
+            add_to_solutions(terminal_selected_value, x_ter, y_ter)
+            
+        if i >= len(S):
+            
+            terminal_selected_value = D[i]
+            print(f"terminal_selected_valueS2: {terminal_selected_value}")
+            x_ter = 1
+            y_ter = C_numerated[0][i]+1
+            print(f"x:{x_ter} y:{y_ter}")
+            add_to_solutions(terminal_selected_value, x_ter, y_ter)
+        else:
+            if D[i] <= S[i]:
+                
+                terminal_selected_value = D[i]
+                print(f"terminal_selected_valueD: {terminal_selected_value}")
+                x_ter = 0
+                y_ter = C_numerated[0][i-1]-1
+                print(f"x:{x_ter} y:{y_ter}")
+                add_to_solutions(terminal_selected_value, x_ter, y_ter)
+            else:
+                terminal_selected_value = S[i]
+                print(f"terminal_selected_valueS: {terminal_selected_value}")
+                x_ter = C_numerated[i-1][0]-1
+                y_ter = 0
+                print(f"x:{x_ter} y:{y_ter}")
+                add_to_solutions(terminal_selected_value, x_ter, y_ter)
+        print(solution_matrix)
+            
+            
         
     print(solution_matrix)
     
