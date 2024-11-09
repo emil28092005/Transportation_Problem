@@ -183,7 +183,6 @@ def Russell(
             return Result(State.UNAPPLICABLE)
     return Result(State.SOLVED, C * x_0, x_0)
 
-
 def print_problem_statement(S, C, D) -> None:
     # TODO print table
     pass
@@ -273,9 +272,40 @@ def TEST_CASE_1():
 
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
 
+def TEST_CASE_2():
+    print("----------------------RUNNING_TEST_CASE_2----------------------")
+    C = np.array([[5, 8, 6],
+              [4, 7, 9],
+              [3, 8, 5]], dtype=np.int64)
+
+    S = np.array([20, 30, 25], dtype=np.int64)
+
+    D = np.array([10, 25, 40], dtype=np.int64)
+    print_problem_statement(S, C, D)
+
+    NWExpected = np.array([
+        [10, 10, 0],
+        [0, 15, 15],
+        [0, 0, 25],
+    ], dtype=np.int64)
+
+    VogelExpected = np.array([
+        [0],
+        [0],
+        [0] # Заполнить
+    ], dtype=np.int64)
+
+    RussellExpected = np.array([
+        [5, 0, 15],
+        [5, 25, 0],
+        [0, 0, 25]
+    ], dtype=np.int64)
+
+    return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
+
 
 if __name__ == "__main__":
-    tests = [TEST_CASE_1]
+    tests = [TEST_CASE_1, TEST_CASE_2]
     tests_passed = 0
     for test in tests:
         tests_passed += test()
