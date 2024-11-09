@@ -50,12 +50,41 @@ def NorthwestCorner(S: np.array,
         return Result(State.UNAPPLICABLE)
 
 
+#SAMPLE INPUT FOR TESTING
+
+S = np.array([50, 60, 50, 50])
+
+C = np.array([
+    [16, 16, 13, 22, 17], 
+    [14, 14, 13, 19, 15], 
+    [19, 19, 20, 23, M ], 
+    [M,  0,  M,  0,  0]])
+
+D = np.array([30, 20, 70, 30, 60])
+
+
 def Vogel(
         S: np.array,
         C: np.array,
         D: np.array) -> Result:
-
+    
+    
     iteration = 0
+
+    C_initial = C    
+    C_init_height = len(C)
+    C_init_length = len(C[0])
+    
+    solution_matrix = np.zeros((C_init_height, C_init_length), dtype=np.int64)
+
+
+    print(solution_matrix)
+    def add_to_solutions(val, x, y):
+        for yi in range(C_init_height):
+            for xi in range(C_init_length):
+                if (yi == y and xi == x):
+                    solution_matrix[y][x] = val
+                    
     while (len(C[0]) > 1 and len(C) > 1):
         iteration += 1
         C_map = dict()
@@ -96,7 +125,7 @@ def Vogel(
             if (D[x] >= S[y]):
                 row_index_to_eleminate = y
                 selected_value = S[y]
-
+                add_to_solutions(selected_value, x, y)
                 D[x] -= selected_value
 
                 C = np.delete(C, row_index_to_eleminate, 0)
@@ -104,7 +133,7 @@ def Vogel(
             else:
                 column_index_to_eleminate = x
                 selected_value = D[x]
-
+                add_to_solutions(selected_value, x, y)
                 S[y] -= selected_value
 
                 C = np.delete(C, column_index_to_eleminate, 1)
@@ -118,7 +147,7 @@ def Vogel(
             if (D[x] >= S[y]):
                 row_index_to_eleminate = y
                 selected_value = S[y]
-
+                add_to_solutions(selected_value, x, y)
                 D[x] -= selected_value
 
                 C = np.delete(C, row_index_to_eleminate, 0)
@@ -126,19 +155,25 @@ def Vogel(
             else:
                 column_index_to_eleminate = x
                 selected_value = D[x]
-
+                add_to_solutions(selected_value, x, y)
                 S[y] -= selected_value
 
                 C = np.delete(C, column_index_to_eleminate, 1)
                 D = np.delete(D, column_index_to_eleminate, 0)
-
-    if target_array is not None:
+            print(C)
+        print(selected_value)
+    print(solution_matrix)
+    Z = np.sum(np.dot(solution_matrix, C_initial.T))
+    print(f"Z = {Z}")
+    result = Result(State.SOLVED, Z, solution_matrix) 
+    return result
+'''    if target_array is not None:
         objective_function_value = np.sum(np.dot(C, target_array))
         return Result(State.SOLVED, objective_function_value, target_array)
     else:
-        return Result(State.UNAPPLICABLE)
+        return Result(State.UNAPPLICABLE)'''
 
-
+#Vogel(S,C,D)
 
 
 def Russell(
@@ -187,19 +222,7 @@ def Russell(
             return Result(State.UNAPPLICABLE)
     return Result(State.SOLVED, C * x_0, x_0)
 
-'''
-#SAMPLE INPUT FOR TESTING
 
-S = np.array([50, 60, 50, 50])
-
-C = np.array([
-    [16, 16, 13, 22, 17], 
-    [14, 14, 13, 19, 15], 
-    [19, 19, 20, 23, M ], 
-    [M,  0,  M,  0,  0]])
-
-D = np.array([30, 20, 70, 30, 60])
-'''
 
 def print_problem_statement(
         S: np.array,
@@ -213,8 +236,22 @@ def print_problem_statement(
     matrix[matrix == M] = "M"
     print("Initial full matrix:")
     print(matrix)
-
-#print(print_problem_statement(S,C,D))
+    table = ""
+    for y in range(len(matrix)):
+        row = ""
+        for x in range(len(matrix[0])):
+            if matrix[y][x] != "_":
+                if (x == len(matrix[0]) - 1):
+                    row += f" |{matrix[y][x]}"
+                else:
+                    row += f" {matrix[y][x]}"
+                if len(str(matrix[y][x])) == 1:
+                    row += " "
+        if (y == len(matrix)-1):
+            table += f"\n{"_ " * ((len(matrix[0])-1) * 2)}" 
+        table += f"\n{row}"
+    print(table)
+print(print_problem_statement(S,C,D))
 
 
 def solve(
@@ -302,7 +339,7 @@ def TEST_CASE_1():
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
 
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     tests = [TEST_CASE_1]
     tests_passed = 0
     for test in tests:
@@ -310,3 +347,4 @@ if __name__ == "__main__":
     print("----------------------RESULTS----------------------")
     print(f"Total number of tests: {len(tests)}")
     print(f"Total number of passed tests: {tests_passed}")
+'''
