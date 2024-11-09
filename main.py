@@ -91,7 +91,7 @@ def Vogel(
                 D[y] = 0
                 remaining_cols[y] = 0
             x_0[x][y] = selected_value
-        if maxD in ColD:
+        elif maxD in ColD:
             y = np.argmax(ColD, axis=0)
             x = np.argmin(np.where(mask, C.copy(), M)[:, y], axis=0)
 
@@ -232,39 +232,35 @@ def solve(
 def TEST_CASE_1():
     print("----------------------RUNNING_TEST_CASE_1----------------------")
     C = np.array([
-        [16, 16, 13, 22, 17],
-        [14, 14, 13, 19, 15],
-        [19, 19, 20, 23, M],
-        [M, 0, M, 0, 0]
+        [4, 8, 6, 5],
+        [3, 2, 7, 4],
+        [6, 5, 3, 9],
     ], dtype=np.int64)
 
     S = np.array([
-        50, 60, 50, 50
+        150, 200, 100
     ], dtype=np.int64)
 
     D = np.array([
-        30, 20, 70, 30, 60
+        80, 120, 100, 150
     ], dtype=np.int64)
 
     NWExpected = np.array([
-        [30, 20, 0, 0, 0],
-        [0, 0, 60, 0, 0],
-        [0, 0, 10, 30, 10],
-        [0, 0, 0, 0, 50]
+        [80, 70, 0, 0],
+        [0, 50, 100, 50],
+        [0, 0, 0, 100]
     ], dtype=np.int64)
 
     VogelExpected = np.array([
-        [0, 0, 50, 0, 0],
-        [0, 0, 20, 0, 40],
-        [30, 20, 0, 0, 0],
-        [0, 0, 0, 30, 20]
+        [80, 0, 0, 70],
+        [0, 120, 0, 80],
+        [0, 0, 100, 0]
     ], dtype=np.int64)
 
     RussellExpected = np.array([
-        [0, 0, 40, 0, 10],
-        [30, 0, 30, 0, 0],
-        [0, 20, 0, 30, 0],
-        [0, 0, 0, 0, 50]
+        [0, 0, 0, 150],
+        [80, 120, 0, 0],
+        [0, 0, 100, 0]
     ], dtype=np.int64)
 
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
@@ -272,30 +268,30 @@ def TEST_CASE_1():
 
 def TEST_CASE_2():
     print("----------------------RUNNING_TEST_CASE_2----------------------")
-    C = np.array([[5, 8, 6],
-                  [4, 7, 9],
-                  [3, 8, 5]], dtype=np.int64)
+    C = np.array([[7, 3, 8, 6],
+                  [4, 9, 5, 3],
+                  [2, 6, 7, 4]], dtype=np.int64)
 
-    S = np.array([20, 30, 25], dtype=np.int64)
+    S = np.array([180, 160, 140], dtype=np.int64)
 
-    D = np.array([10, 25, 40], dtype=np.int64)
+    D = np.array([100, 110, 90, 180], dtype=np.int64)
 
     NWExpected = np.array([
-        [10, 10, 0],
-        [0, 15, 15],
-        [0, 0, 25],
+        [100, 80, 0, 0],
+        [0, 30, 90, 40],
+        [0, 0, 0, 140]
     ], dtype=np.int64)
 
     VogelExpected = np.array([
-        [0, 5, 15],
-        [10, 20, 0],
-        [0, 0, 25]
+        [0, 110, 0, 70],
+        [0, 0, 90, 70],
+        [100, 0, 0, 40]
     ], dtype=np.int64)
 
     RussellExpected = np.array([
-        [5, 0, 15],
-        [5, 25, 0],
-        [0, 0, 25]
+        [0, 110, 70, 0],
+        [0, 0, 20, 140],
+        [100, 0, 0, 40]
     ], dtype=np.int64)
 
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
@@ -304,35 +300,35 @@ def TEST_CASE_2():
 def TEST_CASE_3():
     print("----------------------RUNNING_TEST_CASE_3----------------------")
     C = np.array([
-        [7, 8, 1, 2],
-        [4, 5, 9, 8],
-        [9, 2, 3, 6],
+        [5, 7, 4, 8],
+        [3, 6, 5, 2],
+        [8, 4, 7, 3],
     ], dtype=np.int64)
 
     S = np.array([
-        160, 140, 170
+        130, 170, 150
     ], dtype=np.int64)
 
     D = np.array([
-        120, 50, 190, 110
+        90, 80, 140, 140
     ], dtype=np.int64)
 
     NWExpected = np.array([
-        [120, 40, 0, 0],
-        [0, 10, 130, 0],
-        [0, 0, 60, 110]
+        [90, 40, 0, 0],
+        [0, 40, 130, 0],
+        [0, 0, 10, 140]
     ], dtype=np.int64)
 
     VogelExpected = np.array([
-        [0, 0, 50, 110],
-        [120, 20, 0, 0],
-        [0, 30, 140, 0],
+        [0, 0, 130, 0],
+        [90, 0, 0, 80],
+        [0, 80, 10, 60]
     ], dtype=np.int64)
 
     RussellExpected = np.array([
-        [0, 0, 160, 0],
-        [120, 0, 0, 20],
-        [0, 50, 30, 90],
+        [0, 0, 130, 0],
+        [90, 70, 10, 0],
+        [0, 10, 0, 140]
     ], dtype=np.int64)
 
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
