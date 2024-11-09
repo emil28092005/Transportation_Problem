@@ -26,12 +26,29 @@ class Result:
         self.solution = solution
 
 
-def NorthwestCorner(
-        S: np.array,
-        C: np.array,
-        D: np.array) -> Result:
-    # TODO Northwest corner method
-    pass
+def NorthwestCorner(S: np.array, 
+                    C: np.array, 
+                    D: np.array) -> Result:
+    num_rows, num_cols = len(S), len(D)
+    solution = [[0] * num_cols for _ in range(num_rows)]
+    
+    i, j = 0, 0
+    while i < num_rows and j < num_cols:
+        quantity = min(S[i], D[j])
+        solution[i][j] = quantity
+        S[i] -= quantity
+        D[j] -= quantity
+        
+        if S[i] == 0:
+            i += 1
+        elif D[j] == 0:
+            j += 1
+
+    if sum(S) == 0 and sum(D) == 0:
+        objective_function_value = np.sum(solution * C)
+        return Result(State.SOLVED, objective_function_value, solution)
+    else:
+        return Result(State.UNAPPLICABLE)
 
 
 
