@@ -86,8 +86,8 @@ def Vogel(
                     solution_matrix[y][x] = val
                     
     C_numerated = np.zeros((C_init_height, C_init_length), dtype=np.int64)
-    C_numerated = np.insert(C_numerated, 0, [str(i+1) for i in range( C_init_length)], axis=0)
-    C_numerated = np.insert(C_numerated, 0, [str(i) for i in range( C_init_height+1)], axis=1)
+    C_numerated = np.insert(C_numerated, 0, [i+1 for i in range( C_init_length)], axis=0)
+    C_numerated = np.insert(C_numerated, 0, [i for i in range( C_init_height+1)], axis=1)
 
     
     
@@ -95,11 +95,7 @@ def Vogel(
                     
     while (len(C[0]) > 1 and len(C) > 1):
         iteration += 1
-        C_map = dict()
 
-        for y in range(len(C)):
-            for x in range(len(C[0])):
-                C_map[x, y] = C[y][x]
 
         C_length = len(C[0])
         C_height = len(C)
@@ -185,7 +181,7 @@ def Vogel(
                 D = np.delete(D, column_index_to_eleminate, 0)
                 C_numerated = np.delete(C_numerated, column_index_to_eleminate+1, 1)
         print(f"x_num: {x_num}, y_num: {y_num}")
-        add_to_solutions(selected_value, x_num, y_num)
+        add_to_solutions(selected_value, x_num-1, y_num-1)
         print("C")
         print(C)
         print("Numerated")
