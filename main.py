@@ -90,7 +90,6 @@ def Vogel(
                 S[x] -= selected_value
                 D[y] = 0
                 remaining_cols[y] = 0
-            print(x, y)
             x_0[x][y] = selected_value
         if maxD in ColD:
             y = np.argmax(ColD, axis=0)
@@ -246,7 +245,6 @@ def TEST_CASE_1():
     D = np.array([
         30, 20, 70, 30, 60
     ], dtype=np.int64)
-    print_problem_statement(S, C, D)
 
     NWExpected = np.array([
         [30, 20, 0, 0, 0],
@@ -281,7 +279,6 @@ def TEST_CASE_2():
     S = np.array([20, 30, 25], dtype=np.int64)
 
     D = np.array([10, 25, 40], dtype=np.int64)
-    print_problem_statement(S, C, D)
 
     NWExpected = np.array([
         [10, 10, 0],
@@ -319,7 +316,6 @@ def TEST_CASE_3():
     D = np.array([
         120, 50, 190, 110
     ], dtype=np.int64)
-    print_problem_statement(S, C, D)
 
     NWExpected = np.array([
         [120, 40, 0, 0],
@@ -350,4 +346,3 @@ if __name__ == "__main__":
     print("----------------------RESULTS----------------------")
     print(f"Total number of tests: {len(tests)}")
     print(f"Total number of passed tests: {tests_passed}")
-
