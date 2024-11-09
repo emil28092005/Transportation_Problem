@@ -25,8 +25,6 @@ class Result:
         self.solution = solution
 
 
-
-
 def NorthwestCorner(S: np.array,
                     C: np.array,
                     D: np.array) -> Result:
@@ -50,166 +48,69 @@ def NorthwestCorner(S: np.array,
         return Result(State.UNAPPLICABLE)
 
 
-#SAMPLE INPUT FOR TESTING
-
-S = np.array([50, 60, 50, 50])
-
-C = np.array([
-    [16, 16, 13, 22, 17], 
-    [14, 14, 13, 19, 15], 
-    [19, 19, 20, 23, M ], 
-    [M,  0,  M,  0,  0]])
-
-D = np.array([30, 20, 70, 30, 60])
-
-
 def Vogel(
         S: np.array,
         C: np.array,
         D: np.array) -> Result:
-    
-    
+    remaining_rows = np.ones(C.shape[0], dtype=bool)
+    remaining_cols = np.ones(C.shape[1], dtype=bool)
+    x_0 = np.zeros(C.shape, dtype=np.int64)
     iteration = 0
 
-    C_initial = C    
-    C_init_height = len(C)
-    C_init_length = len(C[0])
-    
-    solution_matrix = np.zeros((C_init_height, C_init_length), dtype=np.int64)
-
-
-    print(solution_matrix)
-    def add_to_solutions(val, x, y):
-        for yi in range(C_init_height):
-            for xi in range(C_init_length):
-                if (yi == y and xi == x):
-                    solution_matrix[y][x] = val
-                    
-    C_numerated = np.zeros((C_init_height, C_init_length), dtype=np.int64)
-    C_numerated = np.insert(C_numerated, 0, [i+1 for i in range( C_init_length)], axis=0)
-    C_numerated = np.insert(C_numerated, 0, [i for i in range( C_init_height+1)], axis=1)
-
-    
-    
-    print(C_numerated)
-                    
-    while (len(C[0]) > 1 and len(C) > 1):
+    while True:
         iteration += 1
+        mask = np.outer(remaining_rows, remaining_cols)
 
-
-        C_length = len(C[0])
-        C_height = len(C)
-
-        RowD = np.array
-        ColD = np.array
-
-        RowD = np.resize(RowD, C_height)
-        ColD = np.resize(ColD, C_length)
+        if iteration > 1000:
+            return Result(State.UNAPPLICABLE)
 
         # Finding differences
-        for y in range(C_height):
-            RowD[y] = abs(sorted(C[y])[0] - sorted(C[y])[1])
-        for x in range(C_length):
-            ColD[x] = abs(sorted(C.T[x])[0] - sorted(C.T[x])[1])
+        _C = np.sort(np.where(mask, C.copy(), M*M))
+        RowD = _C[:, 1] - _C[:, 0]
+        _C = np.sort(np.where(mask.T, C.copy().T, M*M))
+        ColD = _C[:, 1] - _C[:, 0]
 
         # Maximum difference
         maxD = max(np.concatenate((ColD, RowD)))
 
-        target_array = None
-        target_number = None
-        row_index_to_eleminate = None
-        column_index_to_eleminate = None
-        x_num = None
-        y_num = None
         if maxD in RowD:
-            y = np.where(RowD == maxD)[0][0]
-            target_array = C[np.where(RowD == maxD)[0]][0]
-            target_number = min(target_array)
-            x = np.where(target_array == target_number)[0][0]
+            x = np.argmax(RowD, axis=0)
+            y = np.argmin(np.where(mask, C.copy(), M)[x], axis=0)
 
-            x_num = C_numerated[y+1][0]
-            y_num = C_numerated[0][x+1]
-            
-            
-            if (D[x] >= S[y]):
-                row_index_to_eleminate = y
-                selected_value = S[y]
-                
-                D[x] -= selected_value
-                
-                  
-                C = np.delete(C, row_index_to_eleminate, 0)
-                S = np.delete(S, row_index_to_eleminate, 0)
-                C_numerated = np.delete(C_numerated, row_index_to_eleminate+1, 0)  
+            if (D[y] == 0):
+                break
+
+            if (D[y] >= S[x]):
+                selected_value = S[x]
+                D[y] -= selected_value
+                S[x] = 0
+                remaining_rows[x] = 0
             else:
-                column_index_to_eleminate = x
-                selected_value = D[x]
-                
-                S[y] -= selected_value
-
-                
-                C = np.delete(C, column_index_to_eleminate, 1)
-                D = np.delete(D, column_index_to_eleminate, 0)
-                C_numerated = np.delete(C_numerated, column_index_to_eleminate+1, 1)
+                selected_value = D[y]
+                S[x] -= selected_value
+                D[y] = 0
+                remaining_cols[y] = 0
+            print(x, y)
+            x_0[x][y] = selected_value
         if maxD in ColD:
-            x = np.where(ColD == maxD)[0][0]
-            target_array = C.T[np.where(ColD == maxD)[0]][0]
-            target_number = min(target_array)
-            y = np.where(target_array == target_number)[0][0]
-            print(ColD[x], target_array[y])
+            y = np.argmax(ColD, axis=0)
+            x = np.argmin(np.where(mask, C.copy(), M)[:, y], axis=0)
 
-            x_num = C_numerated[y+1][0]
-            y_num = C_numerated[0][x+1]
+            if (D[y] == 0):
+                break
 
-            if (D[x] >= S[y]):
-                row_index_to_eleminate = y
-                selected_value = S[y]
-                
-                D[x] -= selected_value
-
-                
-                C = np.delete(C, row_index_to_eleminate, 0)
-                S = np.delete(S, row_index_to_eleminate, 0)
-                C_numerated = np.delete(C_numerated, row_index_to_eleminate+1, 0)
+            if (D[y] >= S[x]):
+                selected_value = S[x]
+                D[y] -= selected_value
+                S[x] = 0
+                remaining_rows[x] = 0
             else:
-                column_index_to_eleminate = x
-                selected_value = D[x]
-                
-                S[y] -= selected_value
-                
-                
-                C = np.delete(C, column_index_to_eleminate, 1)
-                D = np.delete(D, column_index_to_eleminate, 0)
-                C_numerated = np.delete(C_numerated, column_index_to_eleminate+1, 1)
-        print(f"x_num: {x_num}, y_num: {y_num}")
-        add_to_solutions(selected_value, x_num-1, y_num-1)
-        print("C")
-        print(C)
-        print("Numerated")
-        print(C_numerated)
-        print(selected_value)
-        
-        
-    print(solution_matrix)
-    
-    
-    Z_matrix = np.zeros((C_init_height, C_init_length), dtype=np.int64)
-    for y in range(C_init_height):
-        for x in range(C_init_length):
-            Z_matrix[y][x] = solution_matrix[y][x] * C_initial[y][x]
-    
-    
-    Z = np.sum(Z_matrix)
-    print(f"Z = {Z}")
-    result = Result(State.SOLVED, Z, solution_matrix) 
-    return result
-'''    if target_array is not None:
-        objective_function_value = np.sum(np.dot(C, target_array))
-        return Result(State.SOLVED, objective_function_value, target_array)
-    else:
-        return Result(State.UNAPPLICABLE)'''
-
-Vogel(S,C,D)
+                selected_value = D[y]
+                S[x] -= selected_value
+                D[y] = 0
+                remaining_cols[y] = 0
+            x_0[x][y] = selected_value
+    return Result(State.SOLVED, C * x_0, x_0)
 
 
 def Russell(
@@ -259,7 +160,6 @@ def Russell(
     return Result(State.SOLVED, C * x_0, x_0)
 
 
-
 def print_problem_statement(
         S: np.array,
         C: np.array,
@@ -285,7 +185,6 @@ def print_problem_statement(
             table += "\n" + "_ " * ((len(matrix[0])-1) * 2)
         table += f"\n{row}"
     print(table)
-print(print_problem_statement(S,C,D))
 
 
 def solve(
@@ -372,11 +271,12 @@ def TEST_CASE_1():
 
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
 
+
 def TEST_CASE_2():
     print("----------------------RUNNING_TEST_CASE_2----------------------")
     C = np.array([[5, 8, 6],
-              [4, 7, 9],
-              [3, 8, 5]], dtype=np.int64)
+                  [4, 7, 9],
+                  [3, 8, 5]], dtype=np.int64)
 
     S = np.array([20, 30, 25], dtype=np.int64)
 
@@ -390,9 +290,9 @@ def TEST_CASE_2():
     ], dtype=np.int64)
 
     VogelExpected = np.array([
-        [0],
-        [0],
-        [0] # Заполнить
+        [0, 5, 15],
+        [10, 20, 0],
+        [0, 0, 25]
     ], dtype=np.int64)
 
     RussellExpected = np.array([
