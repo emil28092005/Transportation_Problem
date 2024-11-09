@@ -84,6 +84,7 @@ def Vogel(
             for xi in range(C_init_length):
                 if (yi == y and xi == x):
                     solution_matrix[y][x] = val
+    
                     
     while (len(C[0]) > 1 and len(C) > 1):
         iteration += 1
@@ -160,10 +161,19 @@ def Vogel(
 
                 C = np.delete(C, column_index_to_eleminate, 1)
                 D = np.delete(D, column_index_to_eleminate, 0)
-            print(C)
+                
+        print(C)
         print(selected_value)
     print(solution_matrix)
-    Z = np.sum(np.dot(solution_matrix, C_initial.T))
+    
+    
+    Z_matrix = np.zeros((C_init_height, C_init_length), dtype=np.int64)
+    for y in range(C_init_height):
+        for x in range(C_init_length):
+            Z_matrix[y][x] = solution_matrix[y][x] * C_initial[y][x]
+    
+    
+    Z = np.sum(Z_matrix)
     print(f"Z = {Z}")
     result = Result(State.SOLVED, Z, solution_matrix) 
     return result
@@ -173,7 +183,7 @@ def Vogel(
     else:
         return Result(State.UNAPPLICABLE)'''
 
-#Vogel(S,C,D)
+Vogel(S,C,D)
 
 
 def Russell(
@@ -234,8 +244,6 @@ def print_problem_statement(
     matrix = np.hstack((matrix, S))
     matrix = matrix.astype(object)
     matrix[matrix == M] = "M"
-    print("Initial full matrix:")
-    print(matrix)
     table = ""
     for y in range(len(matrix)):
         row = ""
