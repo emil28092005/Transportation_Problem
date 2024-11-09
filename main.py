@@ -109,7 +109,7 @@ def Vogel(
                 D[y] = 0
                 remaining_cols[y] = 0
             x_0[x][y] = selected_value
-    return Result(State.SOLVED, C * x_0, x_0)
+    return Result(State.SOLVED, np.sum(C * x_0), x_0)
 
 
 def Russell(
@@ -156,7 +156,7 @@ def Russell(
         it_count += 1
         if (it_count > 1000):
             return Result(State.UNAPPLICABLE)
-    return Result(State.SOLVED, C * x_0, x_0)
+    return Result(State.SOLVED, np.sum(C * x_0), x_0)
 
 
 def print_problem_statement(
