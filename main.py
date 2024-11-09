@@ -350,3 +350,4 @@ if __name__ == "__main__":
     print("----------------------RESULTS----------------------")
     print(f"Total number of tests: {len(tests)}")
     print(f"Total number of passed tests: {tests_passed}")
+
