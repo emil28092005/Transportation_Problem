@@ -84,7 +84,14 @@ def Vogel(
             for xi in range(C_init_length):
                 if (yi == y and xi == x):
                     solution_matrix[y][x] = val
+                    
+    C_numerated = np.zeros((C_init_height, C_init_length), dtype=np.int64)
+    C_numerated = np.insert(C_numerated, 0, [str(i+1) for i in range( C_init_length)], axis=0)
+    C_numerated = np.insert(C_numerated, 0, [str(i) for i in range( C_init_height+1)], axis=1)
+
     
+    
+    print(C_numerated)
                     
     while (len(C[0]) > 1 and len(C) > 1):
         iteration += 1
@@ -116,54 +123,76 @@ def Vogel(
         target_number = None
         row_index_to_eleminate = None
         column_index_to_eleminate = None
-
+        x_num = None
+        y_num = None
         if maxD in RowD:
             y = np.where(RowD == maxD)[0][0]
             target_array = C[np.where(RowD == maxD)[0]][0]
             target_number = min(target_array)
             x = np.where(target_array == target_number)[0][0]
 
+            x_num = C_numerated[0][x+1]
+            y_num = C_numerated[y+1][0]
+            
+            
             if (D[x] >= S[y]):
                 row_index_to_eleminate = y
                 selected_value = S[y]
-                add_to_solutions(selected_value, x, y)
+                
                 D[x] -= selected_value
-
+                
+                  
                 C = np.delete(C, row_index_to_eleminate, 0)
                 S = np.delete(S, row_index_to_eleminate, 0)
+                C_numerated = np.delete(C_numerated, row_index_to_eleminate+1, 0)  
             else:
                 column_index_to_eleminate = x
                 selected_value = D[x]
-                add_to_solutions(selected_value, x, y)
+                
                 S[y] -= selected_value
 
+                
                 C = np.delete(C, column_index_to_eleminate, 1)
                 D = np.delete(D, column_index_to_eleminate, 0)
+                C_numerated = np.delete(C_numerated, column_index_to_eleminate+1, 1)
         if maxD in ColD:
             x = np.where(ColD == maxD)[0][0]
             target_array = C.T[np.where(ColD == maxD)[0]][0]
             target_number = min(target_array)
             y = np.where(target_array == target_number)[0][0]
 
+            x_num = C_numerated[0][x+1]
+            y_num = C_numerated[y+1][0]
+
             if (D[x] >= S[y]):
                 row_index_to_eleminate = y
                 selected_value = S[y]
-                add_to_solutions(selected_value, x, y)
+                
                 D[x] -= selected_value
 
+                
                 C = np.delete(C, row_index_to_eleminate, 0)
                 S = np.delete(S, row_index_to_eleminate, 0)
+                C_numerated = np.delete(C_numerated, row_index_to_eleminate+1, 0)
             else:
                 column_index_to_eleminate = x
                 selected_value = D[x]
-                add_to_solutions(selected_value, x, y)
+                
                 S[y] -= selected_value
-
+                
+                
                 C = np.delete(C, column_index_to_eleminate, 1)
                 D = np.delete(D, column_index_to_eleminate, 0)
-                
+                C_numerated = np.delete(C_numerated, column_index_to_eleminate+1, 1)
+        print(f"x_num: {x_num}, y_num: {y_num}")
+        add_to_solutions(selected_value, x_num, y_num)
+        print("C")
         print(C)
+        print("Numerated")
+        print(C_numerated)
         print(selected_value)
+        
+        
     print(solution_matrix)
     
     
