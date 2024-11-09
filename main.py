@@ -8,7 +8,6 @@ M = 1_000_000
 
 class State(Enum):
     SOLVED = 0
-    UNSOLVED = 1
     UNAPPLICABLE = 2
 
 
@@ -26,19 +25,17 @@ class Result:
         self.solution = solution
 
 
-def NorthwestCorner(S: np.array, 
-                    C: np.array, 
+def NorthwestCorner(S: np.array,
+                    C: np.array,
                     D: np.array) -> Result:
     num_rows, num_cols = len(S), len(D)
-    solution = [[0] * num_cols for _ in range(num_rows)]
-    
+    solution = np.zeros((num_rows, num_cols), dtype=np.int64)
     i, j = 0, 0
     while i < num_rows and j < num_cols:
         quantity = min(S[i], D[j])
         solution[i][j] = quantity
         S[i] -= quantity
         D[j] -= quantity
-        
         if S[i] == 0:
             i += 1
         elif D[j] == 0:
@@ -51,159 +48,94 @@ def NorthwestCorner(S: np.array,
         return Result(State.UNAPPLICABLE)
 
 
-
-S = np.array([50, 60, 50, 50])
-
-C = np.array([
-    [16, 16, 13, 22, 17], 
-    [14, 14, 13, 19, 15], 
-    [19, 19, 20, 23, M ], 
-    [M,  0,  M,  0,  0]])
-
-D = np.array([30, 20, 70, 30, 60])
-
-
 def Vogel(
         S: np.array,
         C: np.array,
         D: np.array) -> Result:
-    
-    print(C)
+
     iteration = 0
-    while(len(C[0]) > 1 and  len(C) > 1):
+    while (len(C[0]) > 1 and len(C) > 1):
         iteration += 1
         C_map = dict()
-        
+
         for y in range(len(C)):
             for x in range(len(C[0])):
-                C_map[x,y] = C[y][x]
-        
+                C_map[x, y] = C[y][x]
+
         C_length = len(C[0])
         C_height = len(C)
-        
-        print(f"C_length: {C_length}")
-        print(f"C_height: {C_height}")
-        
+
         RowD = np.array
         ColD = np.array
-        
 
         RowD = np.resize(RowD, C_height)
         ColD = np.resize(ColD, C_length)
-        
-        #print(sorted(C[0]))
-        #print(sorted(C[0])[0])
-        #print(sorted(C[0])[1])
-        
 
-        #Finding differences
+        # Finding differences
         for y in range(C_height):
             RowD[y] = abs(sorted(C[y])[0] - sorted(C[y])[1])
-        for x in range(C_length):   
+        for x in range(C_length):
             ColD[x] = abs(sorted(C.T[x])[0] - sorted(C.T[x])[1])
-        
-        print(f"S: {S}")
-        print(f"D: {D}")
-        
-        print(f"RowD: {RowD}")
-        print(f"ColD: {ColD}")
-        #Maximum difference
+
+        # Maximum difference
         maxD = max(np.concatenate((ColD, RowD)))
-        
-        
-        target_array = np.array([])
+
+        target_array = None
         target_number = None
         row_index_to_eleminate = None
         column_index_to_eleminate = None
-        
-        print(f"maxD: {maxD}")
-        
-        '''if maxD in RowD:
-            target_array = C[np.where(RowD == maxD)[0]][0]
-            target_number = min(target_array)
-            row_index_to_eleminate = np.where(target_array == target_number)[0][0]
-            print(f"row {row_index_to_eleminate}")
-            C = np.delete(C, row_index_to_eleminate, 0)
-            S = np.delete(S, row_index_to_eleminate, 0)'''
-        
+
         if maxD in RowD:
-            print("in RowD")
             y = np.where(RowD == maxD)[0][0]
             target_array = C[np.where(RowD == maxD)[0]][0]
             target_number = min(target_array)
-            print(f"target_number: {target_number}")
             x = np.where(target_array == target_number)[0][0]
-            print(f"(x,y): {(x,y)}")
-            print(f"D[x]:{D[x]}, S[y]:{S[y]}")
-                
-            if (D[x] >= S[y]): #TODO ?
-                print("D[x] > S[y]")
+
+            if (D[x] >= S[y]):
                 row_index_to_eleminate = y
-                print(f"row_index_to_eleminate {row_index_to_eleminate}")
                 selected_value = S[y]
-                
-                D[x] -= selected_value 
-                
+
+                D[x] -= selected_value
+
                 C = np.delete(C, row_index_to_eleminate, 0)
                 S = np.delete(S, row_index_to_eleminate, 0)
-                
             else:
-                print("D[x] <= S[y]")
                 column_index_to_eleminate = x
                 selected_value = D[x]
-                
-                S[y] -= selected_value 
-                
+
+                S[y] -= selected_value
+
                 C = np.delete(C, column_index_to_eleminate, 1)
                 D = np.delete(D, column_index_to_eleminate, 0)
-        
         if maxD in ColD:
-            print("in ColD")
             x = np.where(ColD == maxD)[0][0]
             target_array = C.T[np.where(ColD == maxD)[0]][0]
             target_number = min(target_array)
-            print(f"target_number: {target_number}")
             y = np.where(target_array == target_number)[0][0]
-            print(f"(x,y): {(x,y)}")
-            print(f"D[x]:{D[x]}, S[y]:{S[y]}")
-            
-            if (D[x] >= S[y]): #TODO ?
-                print("D[x] > S[y]")
+
+            if (D[x] >= S[y]):
                 row_index_to_eleminate = y
                 selected_value = S[y]
-                
-                D[x] -= selected_value 
-                
+
+                D[x] -= selected_value
+
                 C = np.delete(C, row_index_to_eleminate, 0)
                 S = np.delete(S, row_index_to_eleminate, 0)
-                
             else:
-                print("D[x] <= S[y]")
                 column_index_to_eleminate = x
                 selected_value = D[x]
-                
-                S[y] -= selected_value 
-                
+
+                S[y] -= selected_value
+
                 C = np.delete(C, column_index_to_eleminate, 1)
                 D = np.delete(D, column_index_to_eleminate, 0)
-        print(f"target_array: {target_array}")
-        print(f"selected_value: {selected_value}")
-        
-        
-        
-        print(C)
-        
-        #print(target_array)
-        #print(maxD)
-    
-    
-    
-    
-    
-    # TODO Vogel's method
-    pass
 
-#Vogel(S,C,D)
+    if target_array is not None:
+        objective_function_value = np.sum(np.dot(C, target_array))
+        return Result(State.SOLVED, objective_function_value, target_array)
+    else:
+        return Result(State.UNAPPLICABLE)
+
 
 def Russell(
         S: np.array,
@@ -212,9 +144,11 @@ def Russell(
     selected = np.zeros(C.shape)
     remaining_rows = np.ones(C.shape[0], dtype=bool)
     remaining_cols = np.ones(C.shape[1], dtype=bool)
-    x_0 = np.zeros(C.shape)
-    while True:
+    x_0 = np.zeros(C.shape, dtype=np.int64)
 
+    it_count = 0
+
+    while True:
         mask = np.outer(remaining_rows, remaining_cols)
 
         u = np.max(np.where(mask, C, -M), axis=1)
@@ -243,7 +177,11 @@ def Russell(
             S[i] = 0
             remaining_rows[i] = 0
         selected[i][j] = 1
-    return x_0
+
+        it_count += 1
+        if (it_count > 1000):
+            return Result(State.UNAPPLICABLE)
+    return Result(State.SOLVED, C * x_0, x_0)
 
 
 def print_problem_statement(S, C, D) -> None:
@@ -254,7 +192,11 @@ def print_problem_statement(S, C, D) -> None:
 def solve(
         S: np.array,
         C: np.array,
-        D: np.array) -> int:
+        D: np.array,
+        NWExpected: np.array,
+        VogelExpected: np.array,
+        RussellExpected: np.array,
+        ) -> int:
 
     print_problem_statement(S, C, D)
 
@@ -262,17 +204,36 @@ def solve(
         print("The problem is not balanced!")
         return 1
 
-    result1 = NorthwestCorner(S, C, D)
-    result2 = Vogel(S, C, D)
-    result3 = Russell(S, C, D)
+    result1 = NorthwestCorner(S.copy(), C.copy(), D.copy())
+    result2 = Vogel(S.copy(), C.copy(), D.copy())
+    result3 = Russell(S.copy(), C.copy(), D.copy())
 
-    # TODO check for state (unappicable?)
+    if (any([result1.solved == State.UNAPPLICABLE,
+            result2.solved == State.UNAPPLICABLE,
+            result3.solved == State.UNAPPLICABLE])):
+        print("The method is not applicable!")
+        return 1
+    if (not np.all(NWExpected == result1.solution)):
+        print("Incorrect initial basic feasible solution for North-West.\n",
+              f"Got:\n{result1.solution}.\n Expected:\n{NWExpected}.")
+        return 0
+    if (not np.all(VogelExpected == result2.solution)):
+        print("Incorrect initial basic feasible solution for Vogel's approximation.\n",
+              f"Got:\n{result2.solution}.\n Expected:\n{VogelExpected}.")
+        return 0
+    if (not np.all(RussellExpected == result3.solution)):
+        print("Incorrect initial basic feasible solution for Russell's approximation.\n",
+              f"Got:\n{result3.solution}.\nExpected:\n{RussellExpected}.")
+        return 0
 
-    print(result1.solution, result2.solution, result3.solution)
-    return 0
+    print("North-West initial basic feasible solution:\n", result1.solution,
+          "\nVogel's approximation intial basic feasible solution:\n", result2.solution,
+          "\nRussell's approximation initial basic feasible solution:\n", result3.solution)
+    return 1
 
 
-'''if __name__ == "__main__":
+def TEST_CASE_1():
+    print("----------------------RUNNING_TEST_CASE_1----------------------")
     C = np.array([
         [16, 16, 13, 22, 17],
         [14, 14, 13, 19, 15],
@@ -282,11 +243,42 @@ def solve(
 
     S = np.array([
         50, 60, 50, 50
-    ])
+    ], dtype=np.int64)
 
     D = np.array([
         30, 20, 70, 30, 60
-    ])
+    ], dtype=np.int64)
+    print_problem_statement(S, C, D)
 
-    print(Russell(S, C, D))
-'''
+    NWExpected = np.array([
+        [30, 20, 0, 0, 0],
+        [0, 0, 60, 0, 0],
+        [0, 0, 10, 30, 10],
+        [0, 0, 0, 0, 50]
+    ], dtype=np.int64)
+
+    VogelExpected = np.array([
+        [0, 0, 50, 0, 0],
+        [0, 0, 20, 0, 40],
+        [30, 20, 0, 0, 0],
+        [0, 0, 0, 30, 20]
+    ], dtype=np.int64)
+
+    RussellExpected = np.array([
+        [0, 0, 40, 0, 10],
+        [30, 0, 30, 0, 0],
+        [0, 20, 0, 30, 0],
+        [0, 0, 0, 0, 50]
+    ], dtype=np.int64)
+
+    return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
+
+
+if __name__ == "__main__":
+    tests = [TEST_CASE_1]
+    tests_passed = 0
+    for test in tests:
+        tests_passed += test()
+    print("----------------------RESULTS----------------------")
+    print(f"Total number of tests: {len(tests)}")
+    print(f"Total number of passed tests: {tests_passed}")
