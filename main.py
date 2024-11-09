@@ -378,12 +378,49 @@ def TEST_CASE_2():
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
 
 
-'''if __name__ == "__main__":
-    tests = [TEST_CASE_1]
+def TEST_CASE_3():
+    print("----------------------RUNNING_TEST_CASE_3----------------------")
+    C = np.array([
+        [7, 8, 1, 2],
+        [4, 5, 9, 8],
+        [9, 2, 3, 6],
+    ], dtype=np.int64)
+
+    S = np.array([
+        160, 140, 170
+    ], dtype=np.int64)
+
+    D = np.array([
+        120, 50, 190, 110
+    ], dtype=np.int64)
+    print_problem_statement(S, C, D)
+
+    NWExpected = np.array([
+        [120, 40, 0, 0],
+        [0, 10, 130, 0],
+        [0, 0, 60, 110]
+    ], dtype=np.int64)
+
+    VogelExpected = np.array([
+        [0, 0, 50, 110],
+        [120, 20, 0, 0],
+        [0, 30, 140, 0],
+    ], dtype=np.int64)
+
+    RussellExpected = np.array([
+        [0, 0, 160, 0],
+        [120, 0, 0, 20],
+        [0, 50, 30, 90],
+    ], dtype=np.int64)
+
+    return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
+
+
+if __name__ == "__main__":
+    tests = [TEST_CASE_1, TEST_CASE_2, TEST_CASE_3]
     tests_passed = 0
     for test in tests:
         tests_passed += test()
     print("----------------------RESULTS----------------------")
     print(f"Total number of tests: {len(tests)}")
     print(f"Total number of passed tests: {tests_passed}")
-'''
