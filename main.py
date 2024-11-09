@@ -201,7 +201,7 @@ def Vogel(
             print(f"x:{x_ter} y:{y_ter}")
             add_to_solutions(terminal_selected_value, x_ter, y_ter)
             
-        if i >= len(S):
+        elif i >= len(S):
             
             terminal_selected_value = D[i]
             print(f"terminal_selected_valueS2: {terminal_selected_value}")
@@ -248,7 +248,7 @@ def Vogel(
     else:
         return Result(State.UNAPPLICABLE)'''
 
-Vogel(S,C,D)
+#Vogel(S,C,D)
 
 
 def Russell(
@@ -443,12 +443,11 @@ def TEST_CASE_2():
     return solve(S, C, D, NWExpected, VogelExpected, RussellExpected)
 
 
-'''if __name__ == "__main__":
-    tests = [TEST_CASE_1]
+if __name__ == "__main__":
+    tests = [TEST_CASE_1, TEST_CASE_2]
     tests_passed = 0
     for test in tests:
         tests_passed += test()
     print("----------------------RESULTS----------------------")
     print(f"Total number of tests: {len(tests)}")
     print(f"Total number of passed tests: {tests_passed}")
-'''
