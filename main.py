@@ -86,8 +86,8 @@ def Vogel(
                     solution_matrix[y][x] = val
                     
     C_numerated = np.zeros((C_init_height, C_init_length), dtype=np.int64)
-    C_numerated = np.insert(C_numerated, 0, [str(i+1) for i in range( C_init_length)], axis=0)
-    C_numerated = np.insert(C_numerated, 0, [str(i) for i in range( C_init_height+1)], axis=1)
+    C_numerated = np.insert(C_numerated, 0, [i+1 for i in range( C_init_length)], axis=0)
+    C_numerated = np.insert(C_numerated, 0, [i for i in range( C_init_height+1)], axis=1)
 
     
     
@@ -131,8 +131,8 @@ def Vogel(
             target_number = min(target_array)
             x = np.where(target_array == target_number)[0][0]
 
-            x_num = C_numerated[0][x+1]
-            y_num = C_numerated[y+1][0]
+            x_num = C_numerated[y+1][0]
+            y_num = C_numerated[0][x+1]
             
             
             if (D[x] >= S[y]):
@@ -160,9 +160,10 @@ def Vogel(
             target_array = C.T[np.where(ColD == maxD)[0]][0]
             target_number = min(target_array)
             y = np.where(target_array == target_number)[0][0]
+            print(ColD[x], target_array[y])
 
-            x_num = C_numerated[0][x+1]
-            y_num = C_numerated[y+1][0]
+            x_num = C_numerated[y+1][0]
+            y_num = C_numerated[0][x+1]
 
             if (D[x] >= S[y]):
                 row_index_to_eleminate = y
@@ -285,7 +286,7 @@ def print_problem_statement(
                 if len(str(matrix[y][x])) == 1:
                     row += " "
         if (y == len(matrix)-1):
-            table += f"\n{"_ " * ((len(matrix[0])-1) * 2)}" 
+            table += "\n" + "_ " * ((len(matrix[0])-1) * 2)
         table += f"\n{row}"
     print(table)
 print(print_problem_statement(S,C,D))
