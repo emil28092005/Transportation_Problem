@@ -25,6 +25,8 @@ class Result:
         self.solution = solution
 
 
+
+
 def NorthwestCorner(S: np.array,
                     C: np.array,
                     D: np.array) -> Result:
@@ -137,6 +139,8 @@ def Vogel(
         return Result(State.UNAPPLICABLE)
 
 
+
+
 def Russell(
         S: np.array,
         C: np.array,
@@ -183,10 +187,34 @@ def Russell(
             return Result(State.UNAPPLICABLE)
     return Result(State.SOLVED, C * x_0, x_0)
 
+'''
+#SAMPLE INPUT FOR TESTING
 
-def print_problem_statement(S, C, D) -> None:
-    # TODO print table
-    pass
+S = np.array([50, 60, 50, 50])
+
+C = np.array([
+    [16, 16, 13, 22, 17], 
+    [14, 14, 13, 19, 15], 
+    [19, 19, 20, 23, M ], 
+    [M,  0,  M,  0,  0]])
+
+D = np.array([30, 20, 70, 30, 60])
+'''
+
+def print_problem_statement(
+        S: np.array,
+        C: np.array,
+        D: np.array) -> None:
+    S = S.astype(object)
+    S = np.append(S, "_").reshape(-1, 1)
+    matrix = np.append(C, [D], axis=0)
+    matrix = np.hstack((matrix, S))
+    matrix = matrix.astype(object)
+    matrix[matrix == M] = "M"
+    print("Initial full matrix:")
+    print(matrix)
+
+#print(print_problem_statement(S,C,D))
 
 
 def solve(
